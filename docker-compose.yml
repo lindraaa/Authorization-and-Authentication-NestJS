@@ -1,0 +1,18 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    restart: always
+    ports:
+      - "3308:3306" 
+    environment:
+      MYSQL_ROOT_PASSWORD: naruto_24
+      MYSQL_DATABASE: auth_nestJS
+      # MYSQL_USER: your_username
+      # MYSQL_PASSWORD: your_password
+
+
+# docker-compose up -d
+
+# docker-compose down
+# docker-compose up -d
