@@ -6,13 +6,14 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { BcryptService } from './hashing/bcrypt.service';
 import { createResponse } from 'src/shared/utils/response.util';
 import { SignInDto } from './dto/sign-in.dto';
-
+//Self construct
 @Injectable()
 export class AuthService {
     constructor(
         @InjectRepository(User) private readonly usersRespository:Repository<User>,
         private readonly bcryptService:BcryptService,
     ){}
+    
     async findUserByEmail(email:string):Promise<User|null>{
         return this.usersRespository.findOne({where:{email}})
     }
