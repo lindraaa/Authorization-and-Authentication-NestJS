@@ -3,7 +3,10 @@ import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { instanceToPlain } from 'class-transformer';
 import { SignInDto } from './dto/sign-in.dto';
+import { Auth } from './decorators/auth.decorator';
+import { AuthType } from './enums/auth-type.enum';
 
+@Auth(AuthType.None)
 @Controller('/api/v1/auth')
 export class AuthController {
     constructor(private readonly authService:AuthService){}
