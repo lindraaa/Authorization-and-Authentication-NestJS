@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { AuthType } from '../auth/enums/auth-type.enum';
+import { ActiveUser } from '../auth/decorators/active-user.decorator';
+import { ActiveUserData } from '../auth/interface/active-user-data.interface';
 
-@Auth(AuthType.Bearer)
+// @Auth(AuthType.Bearer)
 @Controller('api/v1/coffees')
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
@@ -15,8 +17,15 @@ export class CoffeesController {
     return this.coffeesService.create(createCoffeeDto);
   }
 
-  @Get()
-  findAll() {
+  // @Get()
+  // findAll(@ActiveUser("email")email:string) {
+  //   console.log(email)
+  //   return this.coffeesService.findAll();
+  // }
+
+    @Get()
+  findAll(@ActiveUser ()user:ActiveUserData) {
+    console.log(user)
     return this.coffeesService.findAll();
   }
 
