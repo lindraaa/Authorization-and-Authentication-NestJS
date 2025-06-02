@@ -5,6 +5,7 @@ import { instanceToPlain } from 'class-transformer';
 import { SignInDto } from './dto/sign-in.dto';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Auth(AuthType.None)
 @Controller('/api/v1/auth')
@@ -22,5 +23,10 @@ export class AuthController {
         const response = await this.authService.sigIn(signInDto)
         return instanceToPlain(response);
 
+    }
+
+    @Post('refresh-tokens')
+    refreshTokens(@Body() refreshTokenDto:RefreshTokenDto){
+        return this.authService.refreshTokens(refreshTokenDto);
     }
 }

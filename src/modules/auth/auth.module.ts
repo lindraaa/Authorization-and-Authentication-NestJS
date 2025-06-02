@@ -20,15 +20,15 @@ import { AuthenticationGuard } from './guards/authentication/authentication.guar
 ],
     providers:[BcryptService, 
               AuthService,
-              {
+              // {
+              //   provide:APP_GUARD,
+              //  useClass:AccessTokenGuard
+              // }
+               {
                 provide:APP_GUARD,
-               useClass:AccessTokenGuard
-              }
-            //    {
-            //     provide:APP_GUARD,
-            //    useClass:AuthenticationGuard
-            //   },
-            //   AccessTokenGuard 
+               useClass:AuthenticationGuard
+              },
+              AccessTokenGuard 
             ],
     controllers: [AuthController],
 })

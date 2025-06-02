@@ -7,7 +7,7 @@ import { AuthType } from '../auth/enums/auth-type.enum';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { ActiveUserData } from '../auth/interface/active-user-data.interface';
 
-// @Auth(AuthType.Bearer)
+@Auth(AuthType.Bearer)
 @Controller('api/v1/coffees')
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}

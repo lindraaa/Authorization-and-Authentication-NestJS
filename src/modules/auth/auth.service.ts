@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import jwtConfig from './config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from './interface/active-user-data.interface';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 
 @Injectable()
@@ -36,22 +37,54 @@ export class AuthService {
     }
     async sigIn(signInDto:SignInDto){
         const user = await this.validateUser(signInDto.email,signInDto.password)
-        const payloadToken = {
-            sub:user.id, 
-            email:user.email,
-            password:user.password
-        } as ActiveUserData
-        
-        const options = {
-            audience:this.jwtConfiguration.audience,
-            issuer:this.jwtConfiguration.issuer,
-            secret:this.jwtConfiguration.secret,
-            expiresIn:this.jwtConfiguration.accessTokenTTl
-        }
-        const res = await this.jwtService.signAsync(payloadToken,options)
-        return createResponse("success",'login successfully',{accessToken:res,user});
+        return await this.generateTokens(user);
 
     }
+    async generateTokens(user: User) {
+        const [accessToken, refreshToken] = await Promise.all([
+            this.signInToken<Partial<ActiveUserData>>(
+            user.id,
+            this.jwtConfiguration.accessTokenTTl,
+            { email: user.email }),
+
+            this.signInToken(
+                user.id, 
+                this.jwtConfiguration.refreshTokenTTl
+            )
+        ]);
+        return createResponse("success", 'login successfully', { accessToken: accessToken, refreshToken, user });
+    }
+
+    async refreshTokens(refreshTokenDto:RefreshTokenDto){
+        try{
+        const {sub} =await this.jwtService.verifyAsync<Pick<ActiveUserData,'sub'>>(
+            refreshTokenDto.refreshToken,{
+                secret:this.jwtConfiguration.secret,
+                audience:this.jwtConfiguration.audience,
+                issuer:this.jwtConfiguration.issuer
+            });
+            const user = await this.usersRespository.findOneByOrFail({id:sub})
+            return this.generateTokens(user);
+        }catch{
+            throw new UnauthorizedException();
+        }
+        }
+    private async signInToken<T>(userId:number, expiresIn:number, payload?:T) {
+        const payloadToken = {
+            sub: userId,
+            ...payload
+           
+        }
+        const options = {
+            audience: this.jwtConfiguration.audience,
+            issuer: this.jwtConfiguration.issuer,
+            secret: this.jwtConfiguration.secret,
+            expiresIn: this.jwtConfiguration.accessTokenTTl
+        };
+        const res = await this.jwtService.signAsync(payloadToken, options);
+        return res;
+    }
+
     async findUserByEmail(email:string):Promise<User|null>{
         return await this.usersRespository.findOne({where:{email}})
     }
