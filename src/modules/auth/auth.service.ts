@@ -50,7 +50,7 @@ export class AuthService {
             this.signInToken<Partial<ActiveUserData>>(
             user.id,
             this.jwtConfiguration.accessTokenTTl,
-            { email: user.email }),
+            { email: user.email,role:user.role }),
 
             this.signInToken(
                 user.id, 
