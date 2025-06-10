@@ -13,6 +13,7 @@ import { ActiveUserData } from './interface/active-user-data.interface';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { InvalidatedRefreshTokenError, RefreshTokenIdsStorage } from './refresh-token-ids.storage/refresh-token-ids.storage';
 import { randomUUID } from 'crypto';
+import { permission } from 'process';
 
 
 @Injectable()
@@ -50,7 +51,7 @@ export class AuthService {
             this.signInToken<Partial<ActiveUserData>>(
             user.id,
             this.jwtConfiguration.accessTokenTTl,
-            { email: user.email,role:user.role }),
+            { email: user.email,role:user.role, permissions:user.permissions }),
 
             this.signInToken(
                 user.id, 

@@ -1,6 +1,7 @@
 import { Exclude } from "class-transformer";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../enums/role.enun";
+import { PermissionType } from "src/modules/auth/permission.type";
 
 @Entity()
 export class User {
@@ -24,4 +25,10 @@ export class User {
         default:Role.Regular
         })
     role:Role; 
+
+    @Column({
+    type: 'simple-array',
+    nullable: false,
+    })
+    permissions: PermissionType[] = [];
 }

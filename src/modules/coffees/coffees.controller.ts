@@ -8,13 +8,16 @@ import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { ActiveUserData } from '../auth/interface/active-user-data.interface';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../users/enums/role.enun';
+import { Permission } from '../auth/permission.type';
+import { Permissions } from '../auth/decorators/permissions.decorator';
 
 @Auth(AuthType.Bearer)
 @Controller('api/v1/coffees')
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
   
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
+  @Permissions(Permission.CreateCoffee)
   @Post()
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
     return this.coffeesService.create(createCoffeeDto);
